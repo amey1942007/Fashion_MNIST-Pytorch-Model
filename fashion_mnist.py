@@ -32,6 +32,9 @@ import matplotlib.pyplot as plt
 # Randomization library
 import random
 
+# Get cpu or gpu device for training.
+device = "cuda" if torch.cuda.is_available() else "cpu"
+
 """## Training data checks =========================================================================================================================================================="""
 
 # importing data
@@ -86,7 +89,7 @@ class NeuralNetwork(nn.Module): # this nn.Module inherites the property of its s
 
     return network # return the result
 
-model = NeuralNetwork() # create the model
+model = NeuralNetwork().to(device) # create the model
 
 """## =========================================================================================================================================================="""
 
@@ -101,6 +104,9 @@ def Training(dataloader,model,loss,optimiser):
   model.train() # set the model into training mode
 
   for batch_number , (x,y) in enumerate(dataloader):
+
+    x, y = x.to(device), y.to(device) # transfer the data from device to gpu
+
     y_predicted = model(x) # calculate the predicted answer for the data
 
     l = loss(y_predicted,y) # calculate the loss
@@ -121,6 +127,7 @@ def Test(dataloader,model,loss):
 
   with torch.no_grad():
     for x,y in dataloader:
+      x, y = x.to(device), y.to(device) # for testing move the data to gpu
       y_predicted = model(x)
 
       test_loss += loss(y_predicted,y).item()
@@ -165,6 +172,7 @@ plt.imshow(test.data[random_idx], cmap = "Greys")
 
 # Get the pixel data (x) from the same random index
 x = test[random_idx][0]
+x = x.to(device)
 
 # Get the true / correct label (y) from the same random index
 y = test[random_idx][1]
@@ -172,7 +180,7 @@ y = test[random_idx][1]
 
 with torch.no_grad():
     pred = model(x)                     # predict with model
-    prediction = labels[pred[0].argmax(0)] # find predicted label
+    prediction = labels[pred[0].cpu().argmax(0)] # find predicted label
     truth      = labels[y]                 # true label
 
     print(f"simpleNN predict as {prediction} ; truth is {truth}")
@@ -187,7 +195,7 @@ torch.save(model.state_dict(), model_save_path)
 
 print(f"Model weights saved to {model_save_path}")
 
-"""To load the saved weights,we first need to re-instantiate your model architecture, and then load the state dict into it. You should always load weights into a model that has the *same architecture* as the one that was saved."""
+"""To load the saved weights, we first need to re-instantiate your model architecture, and then load the state dict into it. You should always load weights into a model that has the *same architecture* as the one that was saved."""
 
 # First, create a new instance of your NeuralNetwork model
 loaded_model = NeuralNetwork()
