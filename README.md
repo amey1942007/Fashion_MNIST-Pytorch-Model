@@ -18,8 +18,8 @@ To get this project running locally, follow these steps:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your_username/your_repository_name.git
-cd your_repository_name
+git clone https://github.com/amey1942007/Fashion_MNIST-Pytorch-Model
+cd Fashion_MNIST-Pytorch-Model
 ```
 
 ### 2. Install Dependencies
@@ -27,7 +27,7 @@ cd your_repository_name
 Ensure you have Python 3.x installed. Then, install the required libraries:
 
 ```bash
-pip install torch torchvision numpy pandas matplotlib
+pip install torch torchvision numpy pandas matplotlib random
 ```
 
 ## 🏃 Usage
